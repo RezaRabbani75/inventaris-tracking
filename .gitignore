@@ -23,6 +23,7 @@ yarn-error.log
 .github/workflows/
 .github/workflows/*.yml
 openspec
+GEMINI.MD
 # OS Files
 .DS_Store
 Thumbs.db
