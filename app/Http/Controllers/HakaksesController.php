@@ -3,11 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Roles\UpdateUserRoleRequest;
+use App\Http\Requests\Roles\StoreUserRequest;
 use App\Models\ActivityLog;
+use App\Models\StudentProfile;
+use App\Models\TeacherProfile;
+use App\Models\TeknisiProfile;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Role access management (superadmin only).
@@ -33,7 +40,7 @@ class HakaksesController extends Controller
 
         $hakakses = $query->orderBy('name')->get();
 
-        return view('layouts.hakakses.index', compact('hakakses'));
+        return view('hakakses.index', compact('hakakses'));
     }
 
     /**
@@ -43,7 +50,7 @@ class HakaksesController extends Controller
     {
         $hakakses = User::findOrFail($id);
 
-        return view('layouts.hakakses.edit', compact('hakakses'));
+        return view('hakakses.edit', compact('hakakses'));
     }
 
     /**
@@ -53,6 +60,34 @@ class HakaksesController extends Controller
     {
         $user = User::findOrFail($id);
         $user->syncRoles([$request->role]);
+
+        // Delete existing profiles to ensure only one profile type is active
+        $user->studentProfile()->delete();
+        $user->teacherProfile()->delete();
+        $user->teknisiProfile()->delete();
+
+        // Menyimpan data profile sesuai dengan role
+        switch ($request->role) {
+            case 'student':
+                $user->studentProfile()->updateOrCreate(
+                    ['user_id' => $user->id],
+                    ['nik' => $request->nik]
+                );
+                break;
+            case 'teacher':
+                $user->teacherProfile()->updateOrCreate(
+                    ['user_id' => $user->id],
+                    ['nuptk' => $request->nuptk]
+                );
+                break;
+            case 'technician':
+                $user->teknisiProfile()->updateOrCreate(
+                    ['user_id' => $user->id],
+                    ['id_teknisi' => $request->id_technician]
+                );
+                break;
+        }
+        $user->save(); 
 
         ActivityLog::log(
             "Role updated for {$user->name} to {$request->role}",
@@ -73,7 +108,7 @@ class HakaksesController extends Controller
         $user = User::findOrFail($id);
 
         // Prevent deleting yourself
-        if ($user->id === auth()->id()) {
+        if ($user->id === Auth::id()) {        
             return redirect()->route('hakakses.index')
                 ->with('error', 'You cannot delete your own account.');
         }
@@ -89,5 +124,67 @@ class HakaksesController extends Controller
 
         return redirect()->route('hakakses.index')
             ->with('success', 'User deleted successfully.');
+    }
+
+    /**
+     * Show the form for creating a new user.
+     */
+    public function create(): View
+    {
+        return view('hakakses.create');
+    }
+
+    /**
+     * Store a newly created user in storage.
+     */
+    public function store(StoreUserRequest $request): RedirectResponse
+    {
+        // Langsung menangkap input password dan melakukan hashing
+        $userData = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password), 
+            'role' => $request->role,
+        ];
+
+        try {
+            $user = User::create($userData);
+            $user->assignRole($request->role);
+
+            switch ($request->role) {
+                case 'student':
+                    $user->studentProfile()->create([
+                        'nik' => $request->nik,
+                    ]);
+                    break;
+                case 'teacher':
+                    $user->teacherProfile()->create([
+                        'nuptk' => $request->nuptk,
+                    ]);
+                    break;
+                case 'technician':
+                    $user->teknisiProfile()->create([
+                        'id_teknisi' => $request->id_technician,
+                    ]);
+                    break;
+            }
+
+        } catch (\Exception $e) {
+            Log::error("Error creating user: " . $e->getMessage(), [
+                'userData' => $userData,
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->back()->withInput()->withErrors(['error' => 'Failed to create user. Please check logs for details.']);
+        }
+
+        ActivityLog::log(
+            "New user created: {$user->name} with role {$request->role}",
+            'Role Access',
+            'created',
+            $user
+        );
+
+        return redirect()->route('hakakses.index')
+            ->with('success', 'User created successfully.');
     }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -17,6 +18,7 @@ use Spatie\Permission\Traits\HasRoles;
  * Traits used:
  * - HasFactory: Enables model factories for testing and seeding
  * - Notifiable: Allows the model to send notifications
+ * - HasRoles: Spatie permission trait to manage user roles
  */
 class User extends Authenticatable
 {
@@ -34,6 +36,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -42,7 +45,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
+        'password', 
         'remember_token',
     ];
 
@@ -55,7 +58,36 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password' => 'hashed', 
         ];
+    }
+
+    /**
+     * Get the student profile associated with the user.
+     */
+    public function studentProfile(): HasOne
+    {
+        return $this->hasOne(StudentProfile::class);
+    }
+
+    /**
+     * Get the teacher profile associated with the user.
+     */
+    public function teacherProfile(): HasOne
+    {
+        return $this->hasOne(TeacherProfile::class);
+    }
+
+    /**
+     * Get the technician profile associated with the user.
+     */
+    public function teknisiProfile(): HasOne
+    {
+        return $this->hasOne(TeknisiProfile::class);
+    }
+
+    public function peminjamans()
+    {
+        return $this->hasMany(Peminjaman::class);
     }
 }

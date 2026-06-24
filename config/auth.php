@@ -42,6 +42,7 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        // Guard 'technician' telah dihapus karena menggunakan tabel 'users' yang sama
     ],
 
     /*
@@ -66,11 +67,7 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        // Provider 'technician' telah dihapus untuk menghindari redundansi
     ],
 
     /*

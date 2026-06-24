@@ -1,39 +1,61 @@
 <?php
 
-use App\Http\Controllers\ActivityLogController;
-use App\Http\Controllers\ExampleController;
-use App\Http\Controllers\FileManagerController;
-use App\Http\Controllers\HakaksesController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HakaksesController;
+use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\NotificationController;
+
+use App\Http\Controllers\KelolaBarangController;
+use App\Http\Controllers\KatalogController;
+use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PersetujuanController;
+use App\Http\Controllers\KerusakanController;
+use App\Http\Controllers\PerbaikanController;
+use App\Http\Controllers\StatistikController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::middleware('auth')->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::get('/blank-page', [HomeController::class, 'blank'])->name('blank');
-    Route::view('/quick-tour', 'layouts.quick-tour')->name('quick-tour');
 
-    // Profile
+    // General Features (All Roles)
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
     Route::put('/profile/password', [ProfileController::class, 'password'])->name('profile.password');
 
+    // Manage Notifications
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])->name('notifications.unread-count');
+    Route::get('/notifications/recent', [NotificationController::class, 'recent'])->name('notifications.recent');
+    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::delete('/notifications', [NotificationController::class, 'destroyAll'])->name('notifications.destroy-all');
+    Route::get('/notifications/send-test', [NotificationController::class, 'sendTest'])->name('notifications.send-test');
+
     // Role access management (superadmin only)
-    Route::middleware('superadmin')->group(function () {
+    Route::middleware('role:superadmin')->group(function () {
+
         Route::get('/hakakses', [HakaksesController::class, 'index'])->name('hakakses.index');
         Route::get('/hakakses/edit/{id}', [HakaksesController::class, 'edit'])->name('hakakses.edit');
         Route::put('/hakakses/update/{id}', [HakaksesController::class, 'update'])->name('hakakses.update');
         Route::delete('/hakakses/delete/{id}', [HakaksesController::class, 'destroy'])->name('hakakses.delete');
+
+        Route::get('/hakakses/create', [HakaksesController::class, 'create'])->name('hakakses.create');
+        Route::post('/hakakses', [HakaksesController::class, 'store'])->name('hakakses.store');
+
+        // Kelola Data Barang (CRUD)
+        Route::resource('kelola-barang', KelolaBarangController::class);
 
         // Activity logs
         Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
@@ -50,38 +72,43 @@ Route::middleware('auth')->group(function () {
         // Notification admin actions
         Route::get('/notifications/create', [NotificationController::class, 'create'])->name('notifications.create');
         Route::post('/notifications/send', [NotificationController::class, 'send'])->name('notifications.send');
+
+        // Manage Device
+        Route::get('/persetujuan-peminjaman', [PersetujuanController::class, 'index'])->name('persetujuan-peminjaman.index');
+        Route::get('/persetujuan-peminjaman/{id}', [PersetujuanController::class, 'show'])->name('persetujuan-peminjaman.show');
+        Route::put('/persetujuan-peminjaman/{id}', [PersetujuanController::class, 'update'])->name('persetujuan-peminjaman.update');
+
+        // Laporan Statistik
+        Route::get('/statistik', [StatistikController::class, 'index'])->name('statistik.index');
     });
 
-    // Template examples
-    Route::get('/table-example', [ExampleController::class, 'table'])->name('table.example');
-    Route::get('/clock-example', [ExampleController::class, 'clock'])->name('clock.example');
-    Route::get('/chart-example', [ExampleController::class, 'chart'])->name('chart.example');
-    Route::get('/form-example', [ExampleController::class, 'form'])->name('form.example');
-    Route::get('/map-example', [ExampleController::class, 'map'])->name('map.example');
-    Route::get('/calendar-example', [ExampleController::class, 'calendar'])->name('calendar.example');
-    Route::get('/gallery-example', [ExampleController::class, 'gallery'])->name('gallery.example');
-    Route::get('/todo-example', [ExampleController::class, 'todo'])->name('todo.example');
-    Route::get('/contact-example', [ExampleController::class, 'contact'])->name('contact.example');
-    Route::get('/faq-example', [ExampleController::class, 'faq'])->name('faq.example');
-    Route::get('/news-example', [ExampleController::class, 'news'])->name('news.example');
-    Route::get('/about-example', [ExampleController::class, 'about'])->name('about.example');
+    // Teacher and Student routes
+    Route::middleware('role:teacher|student')->group(function () {
 
-    // Notifications
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])->name('notifications.unread-count');
-    Route::get('/notifications/recent', [NotificationController::class, 'recent'])->name('notifications.recent');
-    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
-    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
-    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
-    Route::delete('/notifications', [NotificationController::class, 'destroyAll'])->name('notifications.destroy-all');
-    Route::get('/notifications/send-test', [NotificationController::class, 'sendTest'])->name('notifications.send-test');
+        // Katalog Barang
+        Route::get('/katalog', [KatalogController::class, 'index'])->name('katalog.index');
+        Route::get('/katalog/{id}', [KatalogController::class, 'show'])->name('katalog.show');
 
-    // File manager
-    Route::get('/file-manager', [FileManagerController::class, 'index'])->name('file-manager.index');
-    Route::post('/file-manager/upload', [FileManagerController::class, 'upload'])->name('file-manager.upload');
-    Route::get('/file-manager/{id}/download', [FileManagerController::class, 'download'])->name('file-manager.download');
-    Route::put('/file-manager/{id}', [FileManagerController::class, 'update'])->name('file-manager.update');
-    Route::delete('/file-manager/{id}', [FileManagerController::class, 'destroy'])->name('file-manager.destroy');
-    Route::get('/file-manager/{id}/show', [FileManagerController::class, 'show'])->name('file-manager.show');
-    Route::post('/file-manager/create-folder', [FileManagerController::class, 'createFolder'])->name('file-manager.create-folder');
+        // Peminjaman (Ajukan pinjaman, lihat status)
+        Route::resource('peminjaman-saya', PeminjamanController::class);
+        Route::post('/peminjaman-saya/{id}/kembalikan', [PeminjamanController::class, 'kembalikan'])->name('peminjaman-saya.kembalikan');
+        Route::get('/peminjaman-saya', [PeminjamanController::class, 'index'])->name('peminjaman-saya.index');
+        Route::get('/peminjaman-saya/create', [PeminjamanController::class, 'create'])->name('peminjaman-saya.create');
+        Route::post('/peminjaman-saya', [PeminjamanController::class, 'store'])->name('peminjaman-saya.store');
+        Route::put('/peminjaman-saya/{id}/batalkan', [PeminjamanController::class, 'batalkan'])->name('peminjaman-saya.batalkan');
+
+        // Pelaporan Kerusakan
+        Route::resource('lapor-kerusakan', KerusakanController::class)->except(['destroy']);
+    });
+
+    // Admin and Technician routes
+    Route::middleware(['role:superadmin|technician'])->group(function () {
+
+        // Memantau Daftar Perbaikan
+        Route::get('/kelola-perbaikan', [PerbaikanController::class, 'index'])->name('kelola-perbaikan.index');
+        Route::get('/kelola-perbaikan/{id}', [PerbaikanController::class, 'show'])->name('kelola-perbaikan.show');
+        
+        // Teknisi memperbarui status (Admin hanya bisa melihat)
+        Route::put('/kelola-perbaikan/{id}/status', [PerbaikanController::class, 'updateStatus'])->name('kelola-perbaikan.status');
+    });
 });

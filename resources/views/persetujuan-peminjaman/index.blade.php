@@ -1,0 +1,85 @@
+@extends('layouts.app')
+
+@section('content')
+<section class="section">
+    <div class="section-header">
+        <h1>Kelola Persetujuan Peminjaman</h1>
+    </div>
+
+    <div class="section-body">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible show fade">
+                <div class="alert-body">
+                    <button class="close" data-dismiss="alert"><span>&times;</span></button>
+                    {{ session('success') }}
+                </div>
+            </div>
+        @endif
+
+        <div class="card shadow-sm">
+            <div class="card-header border-bottom">
+                <h4 class="text-primary">Daftar Seluruh Pengajuan Perangkat</h4>
+            </div>
+            
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th class="text-center" width="5%">No</th>
+                                <th>Peminjam</th>
+                                <th>Barang</th>
+                                <th class="text-center">Jumlah</th>
+                                <th>Tgl Pinjam</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center" width="15%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($peminjamans as $key => $peminjaman)
+                                <tr>
+                                    <td class="text-center align-middle">{{ $key + 1 }}</td>
+                                    <td class="align-middle"><strong>{{ $peminjaman->user->name }}</strong></td>
+                                    <td class="align-middle">{{ $peminjaman->barang->nama_barang }}</td>
+                                    <td class="text-center align-middle">{{ $peminjaman->jumlah }}</td>
+                                    <td class="align-middle">{{ $peminjaman->tanggal_pinjam->format('d M Y') }}</td>
+                                    <td class="text-center align-middle">
+                                        @if($peminjaman->status == 'menunggu')
+                                            <span class="badge badge-warning text-dark">Menunggu</span>
+                                        @elseif($peminjaman->status == 'disetujui')
+                                            <span class="badge badge-info">Disetujui</span>
+                                        @elseif($peminjaman->status == 'dipinjam')
+                                            <span class="badge badge-primary">Dipinjam</span>
+                                        @elseif($peminjaman->status == 'dikembalikan')
+                                            <span class="badge badge-success">Dikembalikan</span>
+                                        @elseif($peminjaman->status == 'ditolak')
+                                            <span class="badge badge-danger">Ditolak</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <a href="{{ route('persetujuan-peminjaman.show', $peminjaman->id) }}" class="btn btn-sm btn-info shadow-sm">
+                                            <i class="fas fa-eye"></i> Tinjau
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center p-5">
+                                        <div class="empty-state" data-height="200">
+                                            <div class="empty-state-icon bg-primary mb-3">
+                                                <i class="fas fa-inbox"></i>
+                                            </div>
+                                            <h2>Tidak ada data pengajuan</h2>
+                                            <p class="lead">Belum ada Siswa atau Guru yang mengajukan peminjaman perangkat.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endsection

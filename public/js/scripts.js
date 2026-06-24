@@ -1,6 +1,5 @@
 "use strict";
 
-// ChartJS
 if(window.Chart) {
   Chart.defaults.global.defaultFontFamily = "'Nunito', 'Segoe UI', 'Arial'";
   Chart.defaults.global.defaultFontSize = 12;
@@ -55,8 +54,25 @@ $('[data-confirm]').each(function() {
 
 // Global
 $(function() {
-  let sidebar_nicescroll_opts = {
-    cursoropacitymin: 0,
+const SIDEBAR_SCROLL_POS_KEY = 'sidebar_scroll_position';
+
+function saveSidebarScrollPosition() {
+  if (sidebar_nicescroll) {
+    const scrollTop = sidebar_nicescroll.getScrollTop();
+    localStorage.setItem(SIDEBAR_SCROLL_POS_KEY, scrollTop);
+    console.log('Saved sidebar scroll position:', scrollTop);
+  }
+}
+
+function restoreSidebarScrollPosition() {
+  const savedScrollPosition = localStorage.getItem(SIDEBAR_SCROLL_POS_KEY);
+  if (sidebar_nicescroll && savedScrollPosition !== null) {
+    const scrollValue = parseInt(savedScrollPosition, 10);
+    sidebar_nicescroll.doScrollTop(scrollValue, 0);
+    console.log('Restoring sidebar scroll position:', scrollValue);
+  }
+}
+let sidebar_nicescroll_opts = {    cursoropacitymin: 0,
     cursoropacitymax: .8,
     zindex: 892
   }, now_layout_class = null;
@@ -87,6 +103,10 @@ $(function() {
     if($(".main-sidebar").length) {
       $(".main-sidebar").niceScroll(sidebar_nicescroll_opts);
       sidebar_nicescroll = $(".main-sidebar").getNiceScroll();
+
+      setTimeout(function() {
+        restoreSidebarScrollPosition();
+      }, 500);
 
       $(".main-sidebar .sidebar-menu li a.has-dropdown").off('click').on('click', function() {
         var me     = $(this);
@@ -127,6 +147,16 @@ $(function() {
   }
   sidebar_dropdown();
 
+  // Save scroll position on sidebar link click
+  $('.main-sidebar .sidebar-menu li a').on('click', function() {
+    const me = $(this);
+    // Only save if it's a navigation link and not a dropdown toggle
+    if (!me.hasClass('has-dropdown') && me.attr('href') && me.attr('href') !== '#') {
+      saveSidebarScrollPosition();
+      console.log('Sidebar link clicked. Saving scroll position for:', me.attr('href'));
+    }
+  });
+
   if($("#top-5-scroll").length) {
     $("#top-5-scroll").css({
       height: 315
@@ -157,6 +187,9 @@ $(function() {
       setTimeout(function() {
         $(".main-sidebar").niceScroll(sidebar_nicescroll_opts);
         sidebar_nicescroll = $(".main-sidebar").getNiceScroll();
+        setTimeout(function() {
+          restoreSidebarScrollPosition();
+        }, 150);
       }, 500);
       $(".main-sidebar .sidebar-menu > li > ul .dropdown-title").remove();
       $(".main-sidebar .sidebar-menu > li > a").removeAttr('data-toggle');
@@ -268,6 +301,7 @@ $(function() {
         setTimeout(function() {
           sidebar_nicescroll = main_sidebar.niceScroll(sidebar_nicescroll_opts);
           sidebar_nicescroll = main_sidebar.getNiceScroll();
+          restoreSidebarScrollPosition();
         }, 700);
 
         sidebar_dropdown();
@@ -301,6 +335,9 @@ $(function() {
         $("body").addClass("layout-2");
       }else{
         update_sidebar_nicescroll();
+        setTimeout(function() {
+          restoreSidebarScrollPosition();
+        }, 150);
       }
     }
   }
