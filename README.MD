@@ -170,7 +170,6 @@ $user->assignRole('superadmin');
 $user->role = 'superadmin';
 $user->save();
 
-// 4. (Opsional) Cek untuk memastikan keduanya sudah beres
 $user->getRoleNames();
 $user->role;           
 
