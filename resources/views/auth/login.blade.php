@@ -96,7 +96,7 @@
     }
 
     .password-wrapper .form-control {
-      padding-right: 2.75rem; /* make room for the eye icon */
+      padding-right: 2.75rem;
     }
 
     .password-toggle {

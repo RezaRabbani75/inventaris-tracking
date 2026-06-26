@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Barang;
 use App\Models\Peminjaman;
+use App\Models\LaporanKerusakan;
 
 class HomeController extends Controller
 {
@@ -33,11 +34,13 @@ class HomeController extends Controller
             $data['pinjaman_aktif'] = Peminjaman::where('user_id', Auth::id())
                 ->whereIn('status', ['menunggu', 'disetujui', 'dipinjam'])
                 ->count();
-            $data['laporan_dibuat'] = 1;
+            $data['laporan_dibuat'] = LaporanKerusakan::where('user_id', Auth::id())->count();
         } 
         elseif ($user->hasRole('technician')) {
-            $data['tugas_perbaikan'] = 8;
-            $data['selesai_hari_ini'] = 3;
+            $data['tugas_perbaikan'] = LaporanKerusakan::where('status', 'sedang_diperbaiki')->count();
+            $data['selesai_hari_ini'] = LaporanKerusakan::where('status', 'selesai')
+                ->whereDate('updated_at', now()->toDateString())
+                ->count();
         }
 
         return view('home', compact('data'));

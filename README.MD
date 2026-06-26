@@ -153,15 +153,26 @@ Or run the combined development stack:
 composer run dev
 ```
 
-Open **http://localhost:8000** and register a new account.
+Open **http://localhost:8000**
 
 ### Superadmin Setup
 
-After registration, promote a user to superadmin:
+After the system succesfully running, create a user and promote superadmin:
 
 ```bash
 php artisan tinker
 ```
+
+$user = User::find(1);
+
+$user->assignRole('superadmin');
+
+$user->role = 'superadmin';
+$user->save();
+
+// 4. (Opsional) Cek untuk memastikan keduanya sudah beres
+$user->getRoleNames();
+$user->role;           
 
 ```php
 $user = App\Models\User::where('email', 'your@email.com')->first();

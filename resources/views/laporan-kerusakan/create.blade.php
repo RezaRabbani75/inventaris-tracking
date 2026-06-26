@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Buat Laporan Kerusakan Perangkat')
+
 @section('content')
 <section class="section">
     <div class="section-header">
@@ -82,7 +84,7 @@
                             </div>
 
                             <div class="form-group mb-0 text-right">
-                                <a href="{{ route('laporan-kerusakan.index') }}" class="btn btn-secondary mr-2">Batal</a>
+                                <a href="{{ route('laporan-kerusakan.index') }}" class="btn btn-secondary mr-2 text-black">Batal</a>
                                 <button type="submit" class="btn btn-primary shadow-sm">
                                     <i class="fas fa-paper-plane mr-1"></i> Kirim Laporan Kerusakan
                                 </button>

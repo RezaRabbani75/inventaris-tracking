@@ -38,7 +38,7 @@
         <div class="section-header">
             <h1>Ajukan Peminjaman</h1>
             <div class="section-header-breadcrumb">
-                <div class="breadcrumb-item"><a href="{{ route('home') }}">Dasbor</a></div>
+                <div class="breadcrumb-item"><a href="{{ route('home') }}">Dashboard</a></div>
                 <div class="breadcrumb-item"><a href="{{ url('katalog') }}">Katalog</a></div>
                 <div class="breadcrumb-item active">Ajukan Pinjam</div>
             </div>

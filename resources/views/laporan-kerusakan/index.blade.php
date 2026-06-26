@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Laporkan Kerusakan Perangkat')
+
 @section('content')
 <section class="section">
     <div class="section-header">
@@ -37,7 +39,7 @@
                                 <th class="text-center" width="5%">No</th>
                                 <th>Nama Barang</th>
                                 <th class="text-center">Jumlah Rusak</th>
-                                <th>Sumber Masalah</th>
+                                <th>Status Barang</th>
                                 <th>Tanggal Lapor</th>
                                 <th class="text-center">Status</th>
                                 <th>Catatan Petugas</th>
@@ -49,13 +51,13 @@
                                     <td class="text-center align-middle">{{ $key + 1 }}</td>
                                     <td class="align-middle"><strong>{{ $laporan->barang->nama_barang }}</strong></td>
                                     <td class="text-center align-middle">
-                                        <span class="badge badge-secondary py-1 px-2">{{ $laporan->jumlah_rusak }} unit</span>
+                                        <span class="badge badge-secondary py-1 px-2 text-black">{{ $laporan->jumlah_rusak }} unit</span>
                                     </td>
                                     <td class="align-middle">
                                         @if($laporan->peminjaman_id)
                                             <span class="text-info"><i class="fas fa-bookmark mr-1"></i> Transaksi Pinjam #{{ $laporan->peminjaman_id }}</span>
                                         @else
-                                            <span class="text-muted"><i class="fas fa-hdd mr-1"></i> Sidak Rak Lab</span>
+                                            <span class="text-center"><i class="mr-1 text-black"></i> Sudah Dikembalikan kepada Admin di Rak Lab</span>
                                         @endif
                                     </td>
                                     <td class="align-middle">{{ $laporan->created_at->format('d M Y, H:i') }} WIB</td>

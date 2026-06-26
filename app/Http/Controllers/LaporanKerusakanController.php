@@ -78,6 +78,6 @@ class LaporanKerusakanController extends Controller
         ]);
 
         return redirect()->route('laporan-kerusakan.index')
-                         ->with('success', 'Laporan kerusakan berhasil dikirim. Teknisi dan Admin akan segera memeriksa perangkat !.');
+                         ->with('success', 'Laporan kerusakan berhasil dikirim. Teknisi dan Admin akan segera memeriksa perangkat !');
     }
 }
