@@ -46,7 +46,7 @@
             @role('superadmin')
             <li class="{{ Request::is('persetujuan-peminjaman*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ url('persetujuan-peminjaman') }}">
-                    <i class="fas fa-clipboard-check"></i> <span>Persetujuan Peminjaman</span>
+                    <i class="fas fa-check-square"></i> <span>Monitoring Peminjaman</span>
                 </a>
             </li>
             @endrole
@@ -54,8 +54,8 @@
             <li class="menu-header">Maintenance & Laporan</li>
 
             @hasanyrole('teacher|student')
-            <li class="{{ Request::is('lapor-kerusakan*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ url('lapor-kerusakan') }}">
+            <li class="{{ Request::is('laporan-kerusakan*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('laporan-kerusakan') }}">
                     <i class="fas fa-exclamation-triangle"></i> <span>Buat Laporan Kerusakan</span>
                 </a>
             </li>

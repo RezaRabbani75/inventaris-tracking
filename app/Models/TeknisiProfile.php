@@ -10,7 +10,7 @@ class TeknisiProfile extends Model
 {
     use HasFactory;
 
-    protected $table = 'teknisi_profiles'; // Explicitly set table name
+    protected $table = 'teknisi_profiles';
 
     /**
      * The attributes that are mass assignable.

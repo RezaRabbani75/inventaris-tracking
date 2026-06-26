@@ -14,7 +14,7 @@ use App\Http\Controllers\KelolaBarangController;
 use App\Http\Controllers\KatalogController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PersetujuanController;
-use App\Http\Controllers\KerusakanController;
+use App\Http\Controllers\LaporanKerusakanController;
 use App\Http\Controllers\PerbaikanController;
 use App\Http\Controllers\StatistikController;
 
@@ -83,7 +83,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // Teacher and Student routes
-    Route::middleware('role:teacher|student')->group(function () {
+    Route::middleware(['role:teacher|student'])->group(function () {
 
         // Katalog Barang
         Route::get('/katalog', [KatalogController::class, 'index'])->name('katalog.index');
@@ -98,7 +98,9 @@ Route::middleware('auth')->group(function () {
         Route::put('/peminjaman-saya/{id}/batalkan', [PeminjamanController::class, 'batalkan'])->name('peminjaman-saya.batalkan');
 
         // Pelaporan Kerusakan
-        Route::resource('lapor-kerusakan', KerusakanController::class)->except(['destroy']);
+        Route::get('/laporan-kerusakan', [LaporanKerusakanController::class, 'index'])->name('laporan-kerusakan.index');
+        Route::get('/laporan-kerusakan/create', [LaporanKerusakanController::class, 'create'])->name('laporan-kerusakan.create');
+        Route::post('/laporan-kerusakan', [LaporanKerusakanController::class, 'store'])->name('laporan-kerusakan.store');
     });
 
     // Admin and Technician routes

@@ -42,4 +42,9 @@ class Peminjaman extends Model
     {
         return $this->belongsTo(Barang::class);
     }
+
+    public function laporanKerusakans()
+    {
+        return $this->hasMany(LaporanKerusakan::class);
+    }
 }

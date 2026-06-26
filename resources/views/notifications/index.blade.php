@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Notifications')
+@section('title', 'Notifikasi')
 
 @section('main')
     <div class="main-content">
@@ -14,9 +14,9 @@
             </div>
 
             <div class="section-body">
-                <h2 class="section-title">Your Notifications</h2>
+                <h2 class="section-title">Notifikasi untuk Anda</h2>
                 <p class="section-lead">
-                    View and manage all your notifications.
+                    Lihat dan Kelola Semua Notifikasi
                 </p>
 
                 @if(session('success'))
