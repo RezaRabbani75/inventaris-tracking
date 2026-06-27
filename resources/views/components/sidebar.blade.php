@@ -37,6 +37,7 @@
 
             @hasanyrole('superadmin|teacher|student')
             <li class="menu-header">Fitur Utama</li>
+            @endhasanyrole
 
             @hasanyrole('teacher|student')
             <li class="{{ Request::is('peminjaman-saya*') ? 'active' : '' }}">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Peminjaman;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB; // Tambahkan ini untuk fungsi DB::raw
 
 class LaporanController extends Controller
 {
@@ -35,8 +36,45 @@ class LaporanController extends Controller
             'ditolak'         => (clone $query)->where('status', 'ditolak')->count(),
         ];
 
+        // Ambil data detail transaksi
         $peminjamans = (clone $query)->with(['user', 'barang'])->latest()->get();
 
-        return view('laporan.index', compact('statistik', 'peminjamans', 'startDate', 'endDate'));
+        // ========================================================
+        // DATA UNTUK GRAFIK (CHART.JS)
+        // ========================================================
+        
+        // 1. Top 5 Barang Paling Banyak Dipinjam (Berdasarkan jumlah unit)
+        $topBarang = (clone $query)->select('barang_id', DB::raw('SUM(jumlah) as total_dipinjam'))
+            ->with('barang')
+            ->groupBy('barang_id')
+            ->orderByDesc('total_dipinjam')
+            ->take(5)
+            ->get();
+
+        $chartBarangLabels = $topBarang->pluck('barang.nama_barang')->toArray();
+        $chartBarangData   = $topBarang->pluck('total_dipinjam')->toArray();
+
+        // 2. Top 5 User Paling Aktif Meminjam (Berdasarkan frekuensi/berapa kali pinjam)
+        $topUser = (clone $query)->select('user_id', DB::raw('COUNT(*) as total_transaksi'))
+            ->with('user')
+            ->groupBy('user_id')
+            ->orderByDesc('total_transaksi')
+            ->take(5)
+            ->get();
+
+        $chartUserLabels = $topUser->pluck('user.name')->toArray();
+        $chartUserData   = $topUser->pluck('total_transaksi')->toArray();
+
+        // Kirim semua variabel ke view
+        return view('statistik.index', compact(
+            'statistik', 
+            'peminjamans', 
+            'startDate', 
+            'endDate',
+            'chartBarangLabels',
+            'chartBarangData',
+            'chartUserLabels',
+            'chartUserData'
+        ));
     }
 }

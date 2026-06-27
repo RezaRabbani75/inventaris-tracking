@@ -25,7 +25,7 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8', // Menambahkan validasi wajib isi untuk kata sandi
+            'password' => 'required|string|min:8', 
             'role' => ['required', 'string', Rule::in(['superadmin', 'teacher', 'student', 'technician'])],
             'nuptk' => ['nullable', 'string', 'max:255', Rule::requiredIf($this->input('role') === 'teacher')],
             'nik' => ['nullable', 'string', 'max:255', Rule::requiredIf($this->input('role') === 'student')],

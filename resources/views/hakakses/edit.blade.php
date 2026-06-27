@@ -68,13 +68,13 @@
 
                                 <div class="form-group">
                                     <label>Nama Lengkap</label>
-                                    <input type="text" class="form-control form-control-outline" value="{{ $hakakses->name }}" disabled>
+                                    <input type="text" name="name" class="form-control form-control-outline" value="{{ $hakakses->name }}" readonly>
                                     <small class="form-text text-muted">Nama pengguna tidak dapat diubah dari halaman ini.</small>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Alamat Email</label>
-                                    <input type="text" class="form-control form-control-outline" value="{{ $hakakses->email }}" disabled>
+                                    <input type="text" name="email" class="form-control form-control-outline" value="{{ $hakakses->email }}" readonly>
                                 </div>
 
                                 <div class="form-group">

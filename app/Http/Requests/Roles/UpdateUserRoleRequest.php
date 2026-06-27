@@ -3,33 +3,42 @@
 namespace App\Http\Requests\Roles;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule; // <-- WAJIB ADA
 
 class UpdateUserRoleRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
+        // Menangkap ID user yang sedang di-edit dari URL route
+        $userId = $this->route('id') ?? $this->route('hakakse') ?? $this->route('user');
+
         return [
-            'role' => ['required', 'string', 'in:superadmin,teacher,student,technician'],
-            'id_technician' => ['nullable', 'string', 'max:255', 'required_if:role,technician'],
-            'nuptk' => ['nullable', 'string', 'max:255', 'required_if:role,teacher'],
-            'nik' => ['nullable', 'string', 'max:255', 'required_if:role,student'],
-            // Validasi date_of_birth telah dihapus agar selaras dengan controller dan view
+            'name' => 'required|string|max:255',
+            
+            // PERBAIKAN EMAIL: Mengabaikan email milik user ini sendiri agar tidak dianggap duplikat
+            'email' => [
+                'required', 
+                'string', 
+                'email', 
+                'max:255', 
+                Rule::unique('users')->ignore($userId)
+            ],
+            
+            // Password dibuat opsional saat edit (isi jika ingin mengganti saja)
+            'password' => 'nullable|string|min:8', 
+            
+            'role' => ['required', 'string', Rule::in(['superadmin', 'teacher', 'student', 'technician'])],
+            'nuptk' => ['nullable', 'string', 'max:255', Rule::requiredIf($this->input('role') === 'teacher')],
+            'nik' => ['nullable', 'string', 'max:255', Rule::requiredIf($this->input('role') === 'student')],
+            'id_technician' => ['nullable', 'string', 'max:255', Rule::requiredIf($this->input('role') === 'technician')],
         ];
     }
-
+    
     /**
      * Get the error messages for the defined validation rules.
      *
