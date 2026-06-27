@@ -90,4 +90,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Peminjaman::class);
     }
+
+    public function laporanKerusakans()
+    {
+        return $this->hasMany(LaporanKerusakan::class);
+    }
 }

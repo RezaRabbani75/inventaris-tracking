@@ -97,7 +97,7 @@ class HakaksesController extends Controller
         );
 
         return redirect()->route('hakakses.index')
-            ->with('success', 'User role updated successfully.');
+            ->with('success', 'Role user berhasil diperbarui.');
     }
 
     /**
@@ -110,7 +110,7 @@ class HakaksesController extends Controller
         // Prevent deleting yourself
         if ($user->id === Auth::id()) {        
             return redirect()->route('hakakses.index')
-                ->with('error', 'You cannot delete your own account.');
+                ->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
         }
 
         $userName = $user->name;
@@ -123,7 +123,7 @@ class HakaksesController extends Controller
         );
 
         return redirect()->route('hakakses.index')
-            ->with('success', 'User deleted successfully.');
+            ->with('success', 'User berhasil dihapus.');
     }
 
     /**
@@ -139,7 +139,6 @@ class HakaksesController extends Controller
      */
     public function store(StoreUserRequest $request): RedirectResponse
     {
-        // Langsung menangkap input password dan melakukan hashing
         $userData = [
             'name' => $request->name,
             'email' => $request->email,
@@ -174,7 +173,7 @@ class HakaksesController extends Controller
                 'userData' => $userData,
                 'trace' => $e->getTraceAsString()
             ]);
-            return redirect()->back()->withInput()->withErrors(['error' => 'Failed to create user. Please check logs for details.']);
+            return redirect()->back()->withInput()->withErrors(['error' => 'Gagal membuat user. Silakan periksa log untuk detailnya.']);
         }
 
         ActivityLog::log(
@@ -185,6 +184,6 @@ class HakaksesController extends Controller
         );
 
         return redirect()->route('hakakses.index')
-            ->with('success', 'User created successfully.');
+            ->with('success', 'Berhasil membuat & menambahkan user.');
     }
 }

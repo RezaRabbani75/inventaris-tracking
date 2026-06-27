@@ -27,7 +27,7 @@
         <div class="section-header">
             <h1>Ubah Peran Pengguna</h1>
             <div class="section-header-breadcrumb">
-                <div class="breadcrumb-item active"><a href="{{ route('home') }}">Dasbor</a></div>
+                <div class="breadcrumb-item active"><a href="{{ route('home') }}">Dashboard</a></div>
                 <div class="breadcrumb-item"><a href="{{ route('hakakses.index') }}">Hak Akses</a></div>
                 <div class="breadcrumb-item">Ubah</div>
             </div>

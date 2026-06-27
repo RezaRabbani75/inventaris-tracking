@@ -1,3 +1,3 @@
   <div class="simple-footer">
-      Copyright &copy; Inventory - Tracking 2026
+      Copyright &copy; Pinjam.in - 2026
   </div>

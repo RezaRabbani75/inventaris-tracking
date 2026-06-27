@@ -14,8 +14,10 @@
                     <i class="fas fa-fire"></i><span>Beranda</span>
                 </a>
             </li>
-
+            
+            @hasanyrole('superadmin|teacher|student')
             <li class="menu-header">Inventaris Lab</li>
+            @endhasanyrole
             
             @hasanyrole('teacher|student')
             <li class="{{ Request::is('katalog*') ? 'active' : '' }}">
@@ -33,8 +35,9 @@
             </li>
             @endrole
 
+            @hasanyrole('superadmin|teacher|student')
             <li class="menu-header">Fitur Utama</li>
-            
+
             @hasanyrole('teacher|student')
             <li class="{{ Request::is('peminjaman-saya*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ url('peminjaman-saya') }}">
@@ -46,7 +49,7 @@
             @role('superadmin')
             <li class="{{ Request::is('persetujuan-peminjaman*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ url('persetujuan-peminjaman') }}">
-                    <i class="fas fa-clipboard-check"></i> <span>Persetujuan Peminjaman</span>
+                    <i class="fas fa-check-square"></i> <span>Monitoring Peminjaman</span>
                 </a>
             </li>
             @endrole
@@ -54,8 +57,8 @@
             <li class="menu-header">Maintenance & Laporan</li>
 
             @hasanyrole('teacher|student')
-            <li class="{{ Request::is('lapor-kerusakan*') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ url('lapor-kerusakan') }}">
+            <li class="{{ Request::is('laporan-kerusakan*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ url('laporan-kerusakan') }}">
                     <i class="fas fa-exclamation-triangle"></i> <span>Buat Laporan Kerusakan</span>
                 </a>
             </li>
@@ -68,6 +71,15 @@
                 </a>
             </li>
             @endhasanyrole
+
+            @role('superadmin')
+            <li class="menu-header">Inspeksi Laboratorium</li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('laporan-kerusakan.create') }}">
+                    <i class="fas fa-clipboard-list"></i> <span>Catat Kerusakan Rak</span>
+                </a>
+            </li>
+            @endrole
 
             @role('superadmin')
             <li class="menu-header">Laporan</li>
