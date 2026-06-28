@@ -27,30 +27,42 @@ Auth::routes(['register' => false]);
 Route::middleware('auth')->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-    // General Features (All Roles)
+    // ==========================================
+    // FITUR UMUM (Semua Role)
+    // ==========================================
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
     Route::put('/profile/password', [ProfileController::class, 'password'])->name('profile.password');
 
-    // Manage Notifications
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])->name('notifications.unread-count');
-    Route::get('/notifications/recent', [NotificationController::class, 'recent'])->name('notifications.recent');
-    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
-    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
-    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
-    Route::delete('/notifications', [NotificationController::class, 'destroyAll'])->name('notifications.destroy-all');
-    Route::get('/notifications/send-test', [NotificationController::class, 'sendTest'])->name('notifications.send-test');
+    // MENGELOLA NOTIFIKASI UMUM (Grup Notifikasi)
+    Route::prefix('notifications')->name('notifications.')->controller(NotificationController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/unread-count', 'unreadCount')->name('unread-count');
+        Route::get('/recent', 'recent')->name('recent');
+        Route::post('/mark-all-read', 'markAllAsRead')->name('mark-all-read');
+        Route::delete('/destroy-all', 'destroyAll')->name('destroy-all'); 
+        Route::get('/send-test', 'sendTest')->name('send-test');
+        Route::post('/{id}/mark-as-read', 'markAsRead')->name('mark-as-read');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+    });
 
-    // Role access management (superadmin only)
+    // ==========================================
+    // FITUR KHUSUS SUPERADMIN
+    // ==========================================
     Route::middleware('role:superadmin')->group(function () {
+        
+        // AKSI NOTIFIKASI ADMIN (Grup Notifikasi Khusus Superadmin)
+        Route::prefix('notifications')->name('notifications.')->controller(NotificationController::class)->group(function () {
+            Route::get('/create', 'create')->name('create');
+            Route::post('/send', 'send')->name('send');
+        });
 
+        // Hak Akses
         Route::get('/hakakses', [HakaksesController::class, 'index'])->name('hakakses.index');
         Route::get('/hakakses/edit/{id}', [HakaksesController::class, 'edit'])->name('hakakses.edit');
         Route::put('/hakakses/update/{id}', [HakaksesController::class, 'update'])->name('hakakses.update');
         Route::delete('/hakakses/delete/{id}', [HakaksesController::class, 'destroy'])->name('hakakses.delete');
-
         Route::get('/hakakses/create', [HakaksesController::class, 'create'])->name('hakakses.create');
         Route::post('/hakakses', [HakaksesController::class, 'store'])->name('hakakses.store');
 
@@ -69,10 +81,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/settings', [SettingController::class, 'store'])->name('settings.store');
         Route::post('/settings/reset', [SettingController::class, 'reset'])->name('settings.reset');
 
-        // Notification admin actions
-        Route::get('/notifications/create', [NotificationController::class, 'create'])->name('notifications.create');
-        Route::post('/notifications/send', [NotificationController::class, 'send'])->name('notifications.send');
-
         // Manage Device
         Route::get('/persetujuan-peminjaman', [PersetujuanController::class, 'index'])->name('persetujuan-peminjaman.index');
         Route::get('/persetujuan-peminjaman/{id}', [PersetujuanController::class, 'show'])->name('persetujuan-peminjaman.show');
@@ -82,8 +90,19 @@ Route::middleware('auth')->group(function () {
         Route::get('/statistik', [LaporanController::class, 'index'])->name('statistik.index');
     });
 
+
+    // ==========================================
+    // FITUR GURU & SISWA
+    // ==========================================
+    Route::middleware('role:teacher|student')->group(function () {
+        // Laporan Kerusakan
+        Route::get('/laporan-kerusakan', [LaporanKerusakanController::class, 'index'])->name('laporan-kerusakan.index');
+        Route::get('/laporan-kerusakan/create', [LaporanKerusakanController::class, 'create'])->name('laporan-kerusakan.create');
+        Route::post('/laporan-kerusakan', [LaporanKerusakanController::class, 'store'])->name('laporan-kerusakan.store');
+    });
     // Teacher and Student routes
     Route::middleware(['role:teacher|student|superadmin'])->group(function () {
+
 
         // Katalog Barang
         Route::get('/katalog', [KatalogController::class, 'index'])->name('katalog.index');
@@ -103,7 +122,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/laporan-kerusakan', [LaporanKerusakanController::class, 'store'])->name('laporan-kerusakan.store');
     });
 
-    // Admin and Technician routes
+    // ==========================================
+    // FITUR TEKNISI & ADMIN
+    // ==========================================
     Route::middleware(['role:superadmin|technician'])->group(function () {
 
         // Memantau Daftar Perbaikan

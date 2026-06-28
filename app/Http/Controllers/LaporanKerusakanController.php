@@ -51,6 +51,8 @@ class LaporanKerusakanController extends Controller
 
         $barang = Barang::findOrFail($request->barang_id);
 
+        $barang = Barang::findOrFail($request->barang_id);
+
         if ($request->filled('peminjaman_id')) {
             $peminjaman = Peminjaman::where('id', $request->peminjaman_id)
                                     ->where('user_id', Auth::id())
@@ -69,6 +71,7 @@ class LaporanKerusakanController extends Controller
             }
         }
 
+        // 1. Simpan laporan kerusakan ke database
         LaporanKerusakan::create([
             'user_id'             => Auth::id(),
             'barang_id'           => $request->barang_id,

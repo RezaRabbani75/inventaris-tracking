@@ -31,11 +31,13 @@ class PersetujuanController extends Controller
         ]);
 
         $peminjaman = Peminjaman::with('user')->findOrFail($id);
+        $peminjaman = Peminjaman::with('user')->findOrFail($id);
         $barang = Barang::findOrFail($peminjaman->barang_id);
 
         $statusLama = $peminjaman->status;
         $statusBaru = $request->status;
 
+        // Validasi dan kurangi stok jika disetujui / dipinjam
         if (in_array($statusBaru, ['disetujui', 'dipinjam']) && $statusLama === 'menunggu') {
             if ($barang->stok_tersedia < $peminjaman->jumlah) {
                 return back()->withErrors(['stok' => 'Gagal menyetujui. Stok perangkat tersisa (' . $barang->stok_tersedia . ') tidak mencukupi permintaan (' . $peminjaman->jumlah . ').']);
@@ -43,10 +45,12 @@ class PersetujuanController extends Controller
             $barang->decrement('stok_tersedia', $peminjaman->jumlah);
         }
 
+        // Kembalikan stok jika ditolak atau dikembalikan
         if (in_array($statusBaru, ['dikembalikan', 'ditolak']) && in_array($statusLama, ['disetujui', 'dipinjam'])) {
             $barang->increment('stok_tersedia', $peminjaman->jumlah);
         }
 
+        // Update data transaksi
         $peminjaman->update([
             'status'                 => $statusBaru,
             'pesan_admin'            => $request->pesan_admin,

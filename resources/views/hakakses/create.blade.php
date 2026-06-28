@@ -150,6 +150,16 @@
             const nikInput = document.getElementById('nik');
             const nuptkInput = document.getElementById('nuptk');
             const technicianInput = document.getElementById('id_technician');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const roleSelect = document.getElementById('role');
+            const nikField = document.getElementById('nik_field');
+            const nuptkField = document.getElementById('nuptk_field');
+            const technicianIdField = document.getElementById('id_technician_field');
+
+            const nikInput = document.getElementById('nik');
+            const nuptkInput = document.getElementById('nuptk');
+            const technicianInput = document.getElementById('id_technician');
 
             function toggleFields() {
                 nikField.style.display = 'none';
@@ -160,6 +170,7 @@
                 nuptkInput.removeAttribute('required');
                 technicianInput.removeAttribute('required');
 
+                const selectedRole = roleSelect.value;
                 const selectedRole = roleSelect.value;
 
                 if (selectedRole === 'teacher') {
@@ -180,6 +191,7 @@
                 }
             }
 
+            roleSelect.addEventListener('change', toggleFields);
             roleSelect.addEventListener('change', toggleFields);
 
             toggleFields();

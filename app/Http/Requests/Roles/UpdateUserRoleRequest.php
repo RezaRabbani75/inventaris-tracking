@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Roles;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule; // <-- WAJIB ADA
+use Illuminate\Validation\Rule;
 
 class UpdateUserRoleRequest extends FormRequest
 {
@@ -35,6 +35,7 @@ class UpdateUserRoleRequest extends FormRequest
             'id_technician' => ['nullable', 'string', 'max:255', Rule::requiredIf($this->input('role') === 'technician')],
         ];
     }
+    
     
     /**
      * Get the error messages for the defined validation rules.

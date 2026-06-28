@@ -72,7 +72,8 @@ class PeminjamanController extends Controller
             return back()->withErrors(['jumlah' => 'Jumlah pinjam melebihi stok yang tersedia (Maksimal: ' . $barang->stok_tersedia . ' unit).'])->withInput();
         }
 
-        Peminjaman::create([
+        // 1. Simpan data peminjaman ke database
+        $peminjaman = Peminjaman::create([
             'user_id'                 => Auth::id(),
             'barang_id'               => $request->barang_id,
             'jumlah'                  => $request->jumlah,
@@ -81,6 +82,18 @@ class PeminjamanController extends Controller
             'tanggal_kembali_rencana' => $request->tanggal_kembali_rencana,
             'status'                  => 'menunggu',
         ]);
+
+        // 2. Kirim Notifikasi otomatis ke seluruh Superadmin
+        $superadmins = User::role('superadmin')->get();
+        foreach ($superadmins as $admin) {
+            $admin->notify(new GeneralNotification(
+                'Permintaan Peminjaman Baru',
+                Auth::user()->name . ' mengajukan peminjaman ' . $barang->nama_barang . ' sebanyak ' . $request->jumlah . ' unit.',
+                url('persetujuan-peminjaman'), // Mengarah ke halaman monitoring admin
+                'Cek Permintaan',
+                'info'
+            ));
+        }
 
         return redirect()->route('peminjaman-saya.index')
             ->with('success', 'Pengajuan peminjaman berhasil dibuat! Silakan tunggu persetujuan dari Admin.');

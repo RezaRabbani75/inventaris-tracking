@@ -37,6 +37,7 @@ class LaporanController extends Controller
             'ditolak'         => (clone $query)->where('status', 'ditolak')->count(),
         ];
 
+        // Ambil data detail transaksi
         $peminjamans = (clone $query)->with(['user', 'barang'])->latest()->get();
         
         $topBarang = (clone $query)->select('barang_id', DB::raw('SUM(jumlah) as total_dipinjam'))
