@@ -20,7 +20,7 @@
       /* Disesuaikan dengan aksen warna biru pada gedung di foto */
       --primary-color: #1a73e8; 
       --secondary-color: #0d47a1;
-      --accent-color: #002171;
+      --accent-color: #0136b3;
       --light-bg: #f4f7f6;
       --text-color: #333;
     }
@@ -35,7 +35,6 @@
     /* HERO SECTION */
     .hero {
       min-height: 100vh;
-      /* Menambahkan gradient overlay gelap agar teks putih terbaca jelas dengan background terang */
       background: linear-gradient(rgba(0, 32, 74, 0.6), rgba(0, 0, 0, 0.6)), url('/img/background-welcome/background-3.png') no-repeat center center;
       background-size: cover;
       background-attachment: fixed; 
@@ -75,7 +74,7 @@
     .btn-cta:hover {
       background-color: var(--secondary-color);
       color: #fff;
-      transform: translateY(-3px); /* Efek melayang sedikit */
+      transform: translateY(-3px);
       box-shadow: 0 6px 20px rgba(13, 71, 161, 0.5);
     }
     /* SECTION STYLE */
@@ -118,7 +117,7 @@
       transition: transform 0.3s ease;
     }
     .feature-card:hover i {
-      transform: scale(1.1); /* Ikon membesar sedikit saat di-hover */
+      transform: scale(1.1);
     }
     .feature-card .card-title {
       font-weight: 600;

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Peminjaman;
 use App\Models\Barang;
+use App\Models\User;
+use App\Notifications\GeneralNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,11 +23,20 @@ class PeminjamanController extends Controller
 
     public function create(Request $request)
     {
+        $pinjamanAktif = Peminjaman::where('user_id', Auth::id())
+            ->whereIn('status', ['menunggu', 'disetujui', 'dipinjam'])
+            ->exists();
+
+        if ($pinjamanAktif) {
+            return redirect()->route('katalog.index')
+                ->withErrors(['Akses Ditolak: Kamu masih memiliki transaksi peminjaman / pengajuan yang sedang aktif !']);
+        }
+
         $barang_id = $request->query('barang_id');
 
         if (!$barang_id) {
             return redirect()->route('katalog.index')
-                             ->withErrors(['Silahkan pilih perangkat dari katalog terlebih dahulu sebelum meminjam !']);
+                ->withErrors(['Tolong pilih perangkat dari katalog terlebih dahulu sebelum meminjam.']);
         }
 
         $barang = Barang::findOrFail($barang_id);
@@ -35,6 +46,15 @@ class PeminjamanController extends Controller
 
     public function store(Request $request)
     {
+        $pinjamanAktif = Peminjaman::where('user_id', Auth::id())
+            ->whereIn('status', ['menunggu', 'disetujui', 'dipinjam'])
+            ->exists();
+
+        if ($pinjamanAktif) {
+            return redirect()->route('katalog.index')
+                ->withErrors(['Sistem mendeteksi adanya manipulasi. Kamu tidak diizinkan meminjam lebih dari satu perangkat dalam satu waktu.']);
+        }
+
         $request->validate([
             'barang_id'               => 'required|exists:barangs,id',
             'jumlah'                  => 'required|integer|min:1',
@@ -42,7 +62,7 @@ class PeminjamanController extends Controller
             'tanggal_pinjam'          => 'required|date|after_or_equal:today',
             'tanggal_kembali_rencana' => 'required|date|after_or_equal:tanggal_pinjam',
         ], [
-            'tanggal_pinjam.after_or_equal' => 'Tanggal pinjam tidak boleh di masa lalu.',
+            'tanggal_pinjam.after_or_equal'          => 'Tanggal pinjam tidak boleh di masa lalu.',
             'tanggal_kembali_rencana.after_or_equal' => 'Tanggal kembali harus sama atau setelah tanggal pinjam.',
         ]);
 
@@ -59,24 +79,13 @@ class PeminjamanController extends Controller
             'tujuan_pinjam'           => $request->tujuan_pinjam,
             'tanggal_pinjam'          => $request->tanggal_pinjam,
             'tanggal_kembali_rencana' => $request->tanggal_kembali_rencana,
-            'status'                  => 'menunggu', 
+            'status'                  => 'menunggu',
         ]);
 
         return redirect()->route('peminjaman-saya.index')
-                         ->with('success', 'Pengajuan peminjaman berhasil dibuat! Silakan tunggu persetujuan dari Admin.');
+            ->with('success', 'Pengajuan peminjaman berhasil dibuat! Silakan tunggu persetujuan dari Admin.');
     }
 
-    /**
-     * Mengembalikan barang yang sedang dipinjam (Akan kita bahas di tahap selanjutnya)
-     */
-    public function kembalikan(Request $request, string $id)
-    {
-        // Nanti kita isi setelah fitur pengajuan dan persetujuan selesai
-    }
-
-    /**
-     * Membatalkan pengajuan yang masih berstatus 'menunggu'
-     */
     public function batalkan(Request $request, string $id)
     {
         $peminjaman = Peminjaman::where('id', $id)->where('user_id', Auth::id())->firstOrFail();

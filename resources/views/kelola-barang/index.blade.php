@@ -98,8 +98,8 @@
                                                 </td>
                                                 <td>
                                                     <strong>{{ $barang->nama_barang }}</strong><br>
-                                                    <span class="text-muted" style="font-size: 0.85rem;">Kode: {{ $barang->kode_barang }}</span><br>
-                                                    <span class="badge badge-light mt-1">{{ $barang->kategori }}</span>
+                                                    <span class="text-primary" style="font-size: 0.85rem;">Kode: {{ $barang->kode_barang }}</span><br>
+                                                    <span class="badge badge-info mt-1">{{ $barang->kategori }}</span>
                                                 </td>
                                                 <td>
                                                     <div class="stock-info">

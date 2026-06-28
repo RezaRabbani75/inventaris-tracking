@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Peminjaman;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanController extends Controller
 {
@@ -36,7 +38,44 @@ class LaporanController extends Controller
         ];
 
         $peminjamans = (clone $query)->with(['user', 'barang'])->latest()->get();
+        
+        $topBarang = (clone $query)->select('barang_id', DB::raw('SUM(jumlah) as total_dipinjam'))
+            ->with('barang')
+            ->groupBy('barang_id')
+            ->orderByDesc('total_dipinjam')
+            ->take(5)
+            ->get();
 
-        return view('laporan.index', compact('statistik', 'peminjamans', 'startDate', 'endDate'));
+        $chartBarangLabels = $topBarang->pluck('barang.nama_barang')->toArray();
+        $chartBarangData   = $topBarang->pluck('total_dipinjam')->toArray();
+
+        $topUser = (clone $query)->select('user_id', DB::raw('COUNT(*) as total_transaksi'))
+            ->with('user')
+            ->groupBy('user_id')
+            ->orderByDesc('total_transaksi')
+            ->take(5)
+            ->get();
+
+        $chartUserLabels = $topUser->pluck('user.name')->toArray();
+        $chartUserData   = $topUser->pluck('total_transaksi')->toArray();
+
+        if ($request->input('export') === 'pdf') {
+            $pdf = Pdf::loadView('statistik.pdf', compact('peminjamans', 'statistik', 'startDate', 'endDate'));
+            
+            $pdf->setPaper('A4', 'landscape');
+            
+            return $pdf->download('Laporan-Peminjaman-Lab-'.$startDate.'-sd-'.$endDate.'.pdf');
+        }
+
+        return view('statistik.index', compact(
+            'statistik', 
+            'peminjamans', 
+            'startDate', 
+            'endDate',
+            'chartBarangLabels',
+            'chartBarangData',
+            'chartUserLabels',
+            'chartUserData'
+        ));
     }
 }

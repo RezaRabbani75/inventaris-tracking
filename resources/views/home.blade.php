@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6 col-12">
                     <div class="card card-statistic-1 shadow-sm">
-                        <div class="card-icon bg-warning">
+                        <div class="card-icon bg-info">
                             <i class="fas fa-hand-holding"></i>
                         </div>
                         <div class="card-wrap">
@@ -49,7 +49,22 @@
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6 col-12">
                     <div class="card card-statistic-1 shadow-sm">
-                        <div class="card-icon bg-danger">
+                        <div class="card-icon bg-success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="card-wrap">
+                            <div class="card-header">
+                                <h4>Tersedia</h4>
+                            </div>
+                            <div class="card-body">
+                                {{ $data['perangkat_tersedia'] }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                    <div class="card card-statistic-1 shadow-sm">
+                        <div class="card-icon bg-warning">
                             <i class="fas fa-tools"></i>
                         </div>
                         <div class="card-wrap">
@@ -58,6 +73,21 @@
                             </div>
                             <div class="card-body">
                                 {{ $data['sedang_diperbaiki'] }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                    <div class="card card-statistic-1 shadow-sm">
+                        <div class="card-icon bg-danger">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="card-wrap">
+                            <div class="card-header">
+                                <h4>Rusak Total</h4>
+                            </div>
+                            <div class="card-body">
+                                {{ $data['perangkat_afkir'] }}
                             </div>
                         </div>
                     </div>

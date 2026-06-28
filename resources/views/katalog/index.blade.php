@@ -46,6 +46,21 @@
         </div>
 
         <div class="section-body">
+        
+        @if($errors->any())
+            <div class="alert alert-danger alert-dismissible show fade">
+                <div class="alert-body">
+                    <button class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    @foreach($errors->all() as $error)
+                        {{ $error }}
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
             <h2 class="section-title">Cari & Pinjam Perangkat</h2>
             <p class="section-lead">Pilih perangkat Lab yang tersedia di bawah ini untuk menunjang kegiatan belajar mengajar atau praktikum.</p>
 

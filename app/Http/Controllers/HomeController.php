@@ -29,6 +29,8 @@ class HomeController extends Controller
             $data['total_barang'] = Barang::sum('total_stok');
             $data['sedang_dipinjam'] = Peminjaman::whereIn('status', ['disetujui', 'dipinjam'])->sum('jumlah');
             $data['sedang_diperbaiki'] = Barang::sum('stok_diperbaiki');
+            $data['perangkat_tersedia'] = $data['total_barang'] - ($data['sedang_dipinjam'] + $data['sedang_diperbaiki']);
+            $data['perangkat_afkir']    = LaporanKerusakan::where('status', 'rusak_total')->sum('jumlah_rusak');
         } 
         elseif ($user->hasAnyRole(['teacher', 'student'])) {
             $data['pinjaman_aktif'] = Peminjaman::where('user_id', Auth::id())

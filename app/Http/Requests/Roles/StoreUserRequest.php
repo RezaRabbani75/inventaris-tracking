@@ -25,7 +25,7 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8', // Menambahkan validasi wajib isi untuk kata sandi
+            'password' => 'required|string|min:8',
             'role' => ['required', 'string', Rule::in(['superadmin', 'teacher', 'student', 'technician'])],
             'nuptk' => ['nullable', 'string', 'max:255', Rule::requiredIf($this->input('role') === 'teacher')],
             'nik' => ['nullable', 'string', 'max:255', Rule::requiredIf($this->input('role') === 'student')],
@@ -41,7 +41,6 @@ class StoreUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            // Pesan error dasar
             'name.required' => 'Nama lengkap wajib diisi.',
             'email.required' => 'Alamat email wajib diisi.',
             'email.unique' => 'Alamat email ini sudah terdaftar. Silakan gunakan email lain.',
@@ -49,7 +48,6 @@ class StoreUserRequest extends FormRequest
             'password.min' => 'Kata sandi minimal harus terdiri dari 8 karakter.',
             'role.required' => 'Peran (Role) wajib dipilih.',
             
-            // Pesan error kondisional berdasarkan role
             'nuptk.required' => 'Kolom NUPTK wajib diisi untuk peran Guru.',
             'nik.required' => 'Kolom NIK wajib diisi untuk peran Siswa.',
             'id_technician.required' => 'Kolom ID Teknisi wajib diisi untuk peran Teknisi.',

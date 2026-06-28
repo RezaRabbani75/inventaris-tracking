@@ -79,7 +79,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/persetujuan-peminjaman/{id}', [PersetujuanController::class, 'update'])->name('persetujuan-peminjaman.update');
 
         // Laporan Statistik
-        Route::get('/statistik-peminjaman', [LaporanController::class, 'index'])->name('laporan.index');
+        Route::get('/statistik', [LaporanController::class, 'index'])->name('statistik.index');
     });
 
     // Teacher and Student routes

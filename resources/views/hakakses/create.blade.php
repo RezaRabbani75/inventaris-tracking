@@ -140,40 +140,50 @@
     </div>
 
     @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const roleSelect = document.getElementById('role');
-                const nikField = document.getElementById('nik_field');
-                const nuptkField = document.getElementById('nuptk_field');
-                const technicianIdField = document.getElementById('id_technician_field');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const roleSelect = document.getElementById('role');
+            const nikField = document.getElementById('nik_field');
+            const nuptkField = document.getElementById('nuptk_field');
+            const technicianIdField = document.getElementById('id_technician_field');
 
-                function toggleFields() {
-                    nikField.style.display = 'none';
-                    nuptkField.style.display = 'none';
-                    technicianIdField.style.display = 'none';
+            const nikInput = document.getElementById('nik');
+            const nuptkInput = document.getElementById('nuptk');
+            const technicianInput = document.getElementById('id_technician');
 
-                    document.getElementById('nik').removeAttribute('required');
-                    document.getElementById('nuptk').removeAttribute('required');
-                    document.getElementById('id_technician').removeAttribute('required');
+            function toggleFields() {
+                nikField.style.display = 'none';
+                nuptkField.style.display = 'none';
+                technicianIdField.style.display = 'none';
 
-                    const selectedRole = roleSelect.value;
+                nikInput.removeAttribute('required');
+                nuptkInput.removeAttribute('required');
+                technicianInput.removeAttribute('required');
 
-                    if (selectedRole === 'teacher') {
-                        nuptkField.style.display = 'block';
-                        document.getElementById('nuptk').setAttribute('required', 'required');
-                    } else if (selectedRole === 'student') {
-                        nikField.style.display = 'block';
-                        document.getElementById('nik').setAttribute('required', 'required');
-                    } else if (selectedRole === 'technician') {
-                        technicianIdField.style.display = 'block';
-                        document.getElementById('id_technician').setAttribute('required', 'required');
-                    }
+                const selectedRole = roleSelect.value;
+
+                if (selectedRole === 'teacher') {
+                    nuptkField.style.display = 'block';
+                    nuptkInput.setAttribute('required', 'required');
+                    nikInput.value = '';
+                    technicianInput.value = '';
+                } else if (selectedRole === 'student') {
+                    nikField.style.display = 'block';
+                    nikInput.setAttribute('required', 'required');
+                    nuptkInput.value = '';
+                    technicianInput.value = '';
+                } else if (selectedRole === 'technician') {
+                    technicianIdField.style.display = 'block';
+                    technicianInput.setAttribute('required', 'required');
+                    nikInput.value = '';
+                    nuptkInput.value = '';
                 }
+            }
 
-                roleSelect.addEventListener('change', toggleFields);
+            roleSelect.addEventListener('change', toggleFields);
 
-                toggleFields();
-            });
-        </script>
+            toggleFields();
+        });
+    </script>
     @endpush
 @endsection

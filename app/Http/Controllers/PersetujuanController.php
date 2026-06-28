@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Peminjaman;
 use App\Models\Barang;
+use App\Notifications\GeneralNotification;
 use Illuminate\Http\Request;
 
 class PersetujuanController extends Controller
@@ -29,7 +30,7 @@ class PersetujuanController extends Controller
             'pesan_admin' => 'nullable|string'
         ]);
 
-        $peminjaman = Peminjaman::findOrFail($id);
+        $peminjaman = Peminjaman::with('user')->findOrFail($id);
         $barang = Barang::findOrFail($peminjaman->barang_id);
 
         $statusLama = $peminjaman->status;
@@ -51,6 +52,32 @@ class PersetujuanController extends Controller
             'pesan_admin'            => $request->pesan_admin,
             'tanggal_kembali_aktual' => ($statusBaru === 'dikembalikan') ? now() : $peminjaman->tanggal_kembali_aktual,
         ]);
+
+        $judulNotif = 'Status Peminjaman ' . ucfirst($statusBaru);
+        $tipeNotif = 'info';
+        $pesanNotif = 'Pengajuan peminjaman barang ' . $barang->nama_barang . ' Anda sekarang berstatus: ' . ucfirst($statusBaru) . '.';
+
+        if ($statusBaru === 'disetujui' || $statusBaru === 'dikembalikan') {
+            $tipeNotif = 'success';
+        } elseif ($statusBaru === 'ditolak') {
+            $tipeNotif = 'danger';
+        } elseif ($statusBaru === 'dipinjam') {
+            $tipeNotif = 'warning';
+        }
+
+        if ($request->pesan_admin) {
+            $pesanNotif .= ' Catatan Admin: "' . $request->pesan_admin . '"';
+        }
+
+        if ($peminjaman->user) {
+            $peminjaman->user->notify(new GeneralNotification(
+                $judulNotif,
+                $pesanNotif,
+                url('peminjaman-saya'),
+                'Lihat Detail',
+                $tipeNotif
+            ));
+        }
 
         return redirect()->route('persetujuan-peminjaman.index')
                          ->with('success', 'Status pengajuan berhasil diperbarui menjadi: ' . ucfirst($statusBaru));

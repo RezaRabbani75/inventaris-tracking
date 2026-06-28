@@ -4,7 +4,6 @@
 
 @push('style')
     <style>
-        /* Memperhalus garis tepi form agar terlihat lebih modern dan elegan */
         .form-control-outline {
             border: 1px solid #ced4da;
             box-shadow: none;
@@ -68,13 +67,13 @@
 
                                 <div class="form-group">
                                     <label>Nama Lengkap</label>
-                                    <input type="text" class="form-control form-control-outline" value="{{ $hakakses->name }}" disabled>
+                                    <input type="text" name="name" class="form-control form-control-outline" value="{{ $hakakses->name }}" readonly>
                                     <small class="form-text text-muted">Nama pengguna tidak dapat diubah dari halaman ini.</small>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Alamat Email</label>
-                                    <input type="text" class="form-control form-control-outline" value="{{ $hakakses->email }}" disabled>
+                                    <input type="text" name="email" class="form-control form-control-outline" value="{{ $hakakses->email }}" readonly>
                                 </div>
 
                                 <div class="form-group">
@@ -142,17 +141,14 @@
             function toggleRoleSpecificFields() {
                 const selectedRole = roleSelect.value;
 
-                // Sembunyikan semua field dinamis terlebih dahulu
                 nuptkGroup.style.display = 'none';
                 nikGroup.style.display = 'none';
                 idTechnicianGroup.style.display = 'none';
 
-                // Hapus atribut 'required' dari semua field dinamis agar form dapat disubmit jika peran diubah
                 document.getElementById('nuptk').removeAttribute('required');
                 document.getElementById('nik').removeAttribute('required');
                 document.getElementById('id_technician').removeAttribute('required');
 
-                // Tampilkan field spesifik dan tambahkan 'required' berdasarkan peran yang dipilih
                 if (selectedRole === 'teacher') {
                     nuptkGroup.style.display = 'block';
                     document.getElementById('nuptk').setAttribute('required', 'required');
@@ -165,10 +161,8 @@
                 }
             }
 
-            // Pasang Event Listener agar form menyesuaikan diri saat peran diubah
             roleSelect.addEventListener('change', toggleRoleSpecificFields);
 
-            // Panggil sekali di awal untuk mengatur tampilan awal form sesuai data yang tersimpan
             toggleRoleSpecificFields();
         });
     </script>

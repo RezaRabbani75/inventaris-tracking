@@ -10,11 +10,12 @@ use App\Models\TeacherProfile;
 use App\Models\TeknisiProfile;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\DB; 
 use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
 /**
  * Role access management (superadmin only).
