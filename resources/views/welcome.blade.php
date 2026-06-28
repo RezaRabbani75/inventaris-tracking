@@ -202,7 +202,7 @@
             <i class="fas fa-file-export"></i>
             <h5 class="card-title mt-3">Export Laporan</h5>
             <p class="card-text">
-              Memudahkan pembuatan laporan resmi untuk keperluan sekolah atau audit dengan format Excel & PDF.
+              Memudahkan pembuatan laporan resmi untuk keperluan sekolah atau audit yang mendukung format PDF.
             </p>
           </div>
         </div>
