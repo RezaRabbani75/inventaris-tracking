@@ -25,6 +25,20 @@
                                 <th width="35%">Nama Peminjam</th>
                                 <td>: {{ $peminjaman->user->name }}</td>
                             </tr>
+
+                            <tr>
+                                <th>Peran Sistem</th>
+                                <td>: 
+                                    @if($peminjaman->user->hasRole('teacher'))
+                                        <span class="badge badge-info">Guru</span>
+                                    @elseif($peminjaman->user->hasRole('student'))
+                                        <span class="badge badge-secondary">Siswa</span>
+                                    @else
+                                        <span class="badge badge-light">Lainnya</span>
+                                    @endif
+                                </td>
+                            </tr>
+
                             <tr>
                                 <th>Perangkat Diminta</th>
                                 <td>: <strong>{{ $peminjaman->barang->nama_barang }}</strong></td>

@@ -9,11 +9,21 @@ use Illuminate\Http\Request;
 
 class PersetujuanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $peminjamans = Peminjaman::with(['user', 'barang'])->latest()->get();
+        $query = Peminjaman::with(['user', 'barang'])->latest();
+
+        $roleFilter = $request->input('peran');
+
+        if ($roleFilter && in_array($roleFilter, ['teacher', 'student'])) {
+            $query->whereHas('user.roles', function ($q) use ($roleFilter) {
+                $q->where('name', $roleFilter);
+            });
+        }
+
+        $peminjamans = $query->get();
         
-        return view('persetujuan-peminjaman.index', compact('peminjamans'));
+        return view('persetujuan-peminjaman.index', compact('peminjamans', 'roleFilter'));
     }
 
     public function show(string $id)

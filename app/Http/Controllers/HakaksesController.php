@@ -20,19 +20,27 @@ use Illuminate\View\View;
 
 class HakaksesController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request)
     {
-        $query = User::with('roles');
+        $query = User::with('roles')->latest();
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function ($q) use ($search) {
+            $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                  ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
-        $hakakses = $query->orderBy('name')->get();
+        if ($request->filled('role')) {
+            $roleFilter = $request->role;
+            $query->whereHas('roles', function ($q) use ($roleFilter) {
+                $q->where('name', $roleFilter);
+            });
+        }
+
+        $hakakses = $query->paginate(10)->withQueryString();
+        
         return view('hakakses.index', compact('hakakses'));
     }
 
