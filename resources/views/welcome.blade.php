@@ -20,7 +20,7 @@
       /* Disesuaikan dengan aksen warna biru pada gedung di foto */
       --primary-color: #1a73e8; 
       --secondary-color: #0d47a1;
-      --accent-color: #0136b3;
+      --accent-color: #0951fc;
       --light-bg: #f4f7f6;
       --text-color: #333;
     }

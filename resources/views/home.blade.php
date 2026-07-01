@@ -10,7 +10,7 @@
         </div>
 
         <div class="section-body">
-            <h2 class="section-title">Selamat Datang, {{ explode(' ', auth()->user()->name)[0] }}!</h2>
+            <h2 class="section-title">Selamat Datang, {{ explode(' ', auth()->user()->name)[0] }} !</h2>
             <p class="section-lead">Ini adalah halaman dasboard utama Inventory Lab. Semua status dan kondisi barang bisa dilihat di sini.</p>
 
             <div class="row">

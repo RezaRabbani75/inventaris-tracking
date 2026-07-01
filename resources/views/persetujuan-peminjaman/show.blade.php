@@ -32,7 +32,7 @@
                                     @if($peminjaman->user->hasRole('teacher'))
                                         <span class="badge badge-info">Guru</span>
                                     @elseif($peminjaman->user->hasRole('student'))
-                                        <span class="badge badge-secondary">Siswa</span>
+                                        <span class="badge badge-primary">Siswa</span>
                                     @else
                                         <span class="badge badge-light">Lainnya</span>
                                     @endif
