@@ -6,6 +6,7 @@ use App\Models\Peminjaman;
 use App\Models\Barang;
 use App\Notifications\GeneralNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PersetujuanController extends Controller
 {
@@ -40,60 +41,64 @@ class PersetujuanController extends Controller
             'pesan_admin' => 'nullable|string'
         ]);
 
-        $peminjaman = Peminjaman::with('user')->findOrFail($id);
-        $peminjaman = Peminjaman::with('user')->findOrFail($id);
-        $barang = Barang::findOrFail($peminjaman->barang_id);
+        return DB::transaction(function () use ($request, $id) {
+            
+            $peminjaman = Peminjaman::with('user')->lockForUpdate()->findOrFail($id);
+            $barang = Barang::lockForUpdate()->findOrFail($peminjaman->barang_id);
 
-        $statusLama = $peminjaman->status;
-        $statusBaru = $request->status;
+            $statusLama = $peminjaman->status;
+            $statusBaru = $request->status;
 
-        // Validasi dan kurangi stok jika disetujui / dipinjam
-        if (in_array($statusBaru, ['disetujui', 'dipinjam']) && $statusLama === 'menunggu') {
-            if ($barang->stok_tersedia < $peminjaman->jumlah) {
-                return back()->withErrors(['stok' => 'Gagal menyetujui. Stok perangkat tersisa (' . $barang->stok_tersedia . ') tidak mencukupi permintaan (' . $peminjaman->jumlah . ').']);
+            if ($statusLama === $statusBaru) {
+                return redirect()->route('persetujuan-peminjaman.index')
+                                 ->with('info', 'Tidak ada perubahan status pada pengajuan tersebut.');
             }
-            $barang->decrement('stok_tersedia', $peminjaman->jumlah);
-        }
 
-        // Kembalikan stok jika ditolak atau dikembalikan
-        if (in_array($statusBaru, ['dikembalikan', 'ditolak']) && in_array($statusLama, ['disetujui', 'dipinjam'])) {
-            $barang->increment('stok_tersedia', $peminjaman->jumlah);
-        }
+            if (in_array($statusBaru, ['disetujui', 'dipinjam']) && $statusLama === 'menunggu') {
+                if ($barang->stok_tersedia < $peminjaman->jumlah) {
+                    return back()->withErrors(['stok' => 'Gagal menyetujui. Stok perangkat tersisa (' . $barang->stok_tersedia . ') tidak mencukupi permintaan (' . $peminjaman->jumlah . ').']);
+                }
+                $barang->decrement('stok_tersedia', $peminjaman->jumlah);
+            }
 
-        // Update data transaksi
-        $peminjaman->update([
-            'status'                 => $statusBaru,
-            'pesan_admin'            => $request->pesan_admin,
-            'tanggal_kembali_aktual' => ($statusBaru === 'dikembalikan') ? now() : $peminjaman->tanggal_kembali_aktual,
-        ]);
+            if (in_array($statusBaru, ['dikembalikan', 'ditolak']) && in_array($statusLama, ['disetujui', 'dipinjam'])) {
+                $barang->increment('stok_tersedia', $peminjaman->jumlah);
+            }
 
-        $judulNotif = 'Status Peminjaman ' . ucfirst($statusBaru);
-        $tipeNotif = 'info';
-        $pesanNotif = 'Pengajuan peminjaman barang ' . $barang->nama_barang . ' Anda sekarang berstatus: ' . ucfirst($statusBaru) . '.';
+            $peminjaman->update([
+                'status'                 => $statusBaru,
+                'pesan_admin'            => $request->pesan_admin,
+                'tanggal_kembali_aktual' => ($statusBaru === 'dikembalikan') ? now() : $peminjaman->tanggal_kembali_aktual,
+            ]);
 
-        if ($statusBaru === 'disetujui' || $statusBaru === 'dikembalikan') {
-            $tipeNotif = 'success';
-        } elseif ($statusBaru === 'ditolak') {
-            $tipeNotif = 'danger';
-        } elseif ($statusBaru === 'dipinjam') {
-            $tipeNotif = 'warning';
-        }
+            $judulNotif = 'Status Peminjaman ' . ucfirst($statusBaru);
+            $tipeNotif = 'info';
+            $pesanNotif = 'Pengajuan peminjaman barang ' . $barang->nama_barang . ' Anda sekarang berstatus: ' . ucfirst($statusBaru) . '.';
 
-        if ($request->pesan_admin) {
-            $pesanNotif .= ' Catatan Admin: "' . $request->pesan_admin . '"';
-        }
+            if ($statusBaru === 'disetujui' || $statusBaru === 'dikembalikan') {
+                $tipeNotif = 'success';
+            } elseif ($statusBaru === 'ditolak') {
+                $tipeNotif = 'danger';
+            } elseif ($statusBaru === 'dipinjam') {
+                $tipeNotif = 'warning';
+            }
 
-        if ($peminjaman->user) {
-            $peminjaman->user->notify(new GeneralNotification(
-                $judulNotif,
-                $pesanNotif,
-                url('peminjaman-saya'),
-                'Lihat Detail',
-                $tipeNotif
-            ));
-        }
+            if ($request->pesan_admin) {
+                $pesanNotif .= ' Catatan Admin: "' . $request->pesan_admin . '"';
+            }
 
-        return redirect()->route('persetujuan-peminjaman.index')
-                         ->with('success', 'Status pengajuan berhasil diperbarui menjadi: ' . ucfirst($statusBaru));
+            if ($peminjaman->user) {
+                $peminjaman->user->notify(new GeneralNotification(
+                    $judulNotif,
+                    $pesanNotif,
+                    url('peminjaman-saya'),
+                    'Lihat Detail',
+                    $tipeNotif
+                ));
+            }
+
+            return redirect()->route('persetujuan-peminjaman.index')
+                             ->with('success', 'Status pengajuan berhasil diperbarui menjadi: ' . ucfirst($statusBaru));
+        });
     }
 }

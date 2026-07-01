@@ -89,7 +89,7 @@ class PeminjamanController extends Controller
             $admin->notify(new GeneralNotification(
                 'Permintaan Peminjaman Baru',
                 Auth::user()->name . ' mengajukan peminjaman ' . $barang->nama_barang . ' sebanyak ' . $request->jumlah . ' unit.',
-                url('persetujuan-peminjaman'), // Mengarah ke halaman monitoring admin
+                url('persetujuan-peminjaman'),
                 'Cek Permintaan',
                 'info'
             ));

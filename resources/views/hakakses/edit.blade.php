@@ -116,7 +116,7 @@
 
                             </div>
                             <div class="card-footer text-right bg-whitesmoke">
-                                <a href="{{ route('hakakses.index') }}" class="btn btn-secondary mr-2">Batal</a>
+                                <a href="{{ route('hakakses.index') }}" class="btn btn-secondary mr-2 text-dark">Batal</a>
                                 <button type="submit" class="btn btn-primary shadow-sm">
                                     <i class="fas fa-save mr-1"></i> Simpan Perubahan
                                 </button>

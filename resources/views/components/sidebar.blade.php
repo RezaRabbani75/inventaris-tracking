@@ -91,7 +91,7 @@
             </li>
             @endrole
 
-            <li class="menu-header">Fitur Umum</li>
+            <li class="menu-header">Pemberitahuan</li>
             <li class="{{ Request::is('notifications*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('notifications.index') }}">
                     <i class="fas fa-bell"></i> 

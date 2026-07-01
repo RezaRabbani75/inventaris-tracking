@@ -13,7 +13,6 @@
 
     <div class="section-body">
         <div class="row">
-            {{-- Panel Kiri: Informasi Peminjaman --}}
             <div class="col-md-7">
                 <div class="card shadow-sm">
                     <div class="card-header">
@@ -84,14 +83,12 @@
                 </div>
             </div>
 
-            {{-- Panel Kanan: Form Eksekusi Tindakan --}}
             <div class="col-md-5">
                 <div class="card shadow-sm border-top-primary">
                     <div class="card-header">
                         <h4>Tindakan Admin</h4>
                     </div>
                     <div class="card-body">
-                        {{-- Menangkap error jika stok tidak cukup saat disetujui --}}
                         @if($errors->any())
                             <div class="alert alert-danger">
                                 <ul class="mb-0">

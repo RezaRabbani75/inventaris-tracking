@@ -6,10 +6,10 @@
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1>Notifications</h1>
+                <h1>Notifikasi</h1>
                 <div class="section-header-breadcrumb">
                     <div class="breadcrumb-item active"><a href="{{ route('home') }}">Dashboard</a></div>
-                    <div class="breadcrumb-item">Notifications</div>
+                    <div class="breadcrumb-item">Notifikasi</div>
                 </div>
             </div>
 
@@ -36,7 +36,7 @@
                                         <form action="{{ route('notifications.mark-all-read') }}" method="POST" class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-check-double"></i> Mark All as Read
+                                                <i class="fas fa-check-double"></i> Tandai Semua Dibaca
                                             </button>
                                         </form>
                                     @endif
@@ -44,7 +44,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger" onclick="return confirm('Delete all notifications?')">
-                                            <i class="fas fa-trash"></i> Delete All
+                                            <i class="fas fa-trash"></i> Hapus Semua
                                         </button>
                                     </form>
                                 </div>
@@ -98,7 +98,7 @@
                                                             <form action="{{ route('notifications.mark-as-read', $notification->id) }}" method="POST" class="d-inline">
                                                                 @csrf
                                                                 <button type="submit" class="btn btn-sm btn-success">
-                                                                    <i class="fas fa-check"></i> Mark as Read
+                                                                    <i class="fas fa-check"></i> Tandai Dibaca
                                                                 </button>
                                                             </form>
                                                         @endif
@@ -106,7 +106,7 @@
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this notification?')">
-                                                                <i class="fas fa-trash"></i>
+                                                                <i class="fas fa-trash"></i> Hapus
                                                             </button>
                                                         </form>
                                                     </div>
@@ -117,8 +117,8 @@
                                 @else
                                     <div class="p-5 text-center">
                                         <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
-                                        <h5 class="text-muted">No notifications</h5>
-                                        <p class="text-muted">You don't have any notifications yet.</p>
+                                        <h5 class="text-muted">Tidak ada notifikasi</h5>
+                                        <p class="text-muted">Kamu belum memiliki notifikasi.</p>
                                     </div>
                                 @endif
                             </div>

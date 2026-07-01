@@ -128,7 +128,7 @@
                                     
                                 </div>
                                 <div class="card-footer text-right bg-whitesmoke">
-                                    <a href="{{ route('hakakses.index') }}" class="btn btn-secondary mr-2">Batal</a>
+                                    <a href="{{ route('hakakses.index') }}" class="btn btn-secondary mr-2 text-dark">Batal</a>
                                     <button type="submit" class="btn btn-primary shadow-sm"><i class="fas fa-save mr-1"></i> Simpan Pengguna</button>
                                 </div>
                             </form>
@@ -143,16 +143,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const roleSelect = document.getElementById('role');
-            const nikField = document.getElementById('nik_field');
-            const nuptkField = document.getElementById('nuptk_field');
-            const technicianIdField = document.getElementById('id_technician_field');
-
-            const nikInput = document.getElementById('nik');
-            const nuptkInput = document.getElementById('nuptk');
-            const technicianInput = document.getElementById('id_technician');
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const roleSelect = document.getElementById('role');
+            
             const nikField = document.getElementById('nik_field');
             const nuptkField = document.getElementById('nuptk_field');
             const technicianIdField = document.getElementById('id_technician_field');
@@ -171,27 +162,28 @@
                 technicianInput.removeAttribute('required');
 
                 const selectedRole = roleSelect.value;
-                const selectedRole = roleSelect.value;
 
                 if (selectedRole === 'teacher') {
                     nuptkField.style.display = 'block';
                     nuptkInput.setAttribute('required', 'required');
+                    
                     nikInput.value = '';
                     technicianInput.value = '';
                 } else if (selectedRole === 'student') {
                     nikField.style.display = 'block';
                     nikInput.setAttribute('required', 'required');
+                    
                     nuptkInput.value = '';
                     technicianInput.value = '';
                 } else if (selectedRole === 'technician') {
                     technicianIdField.style.display = 'block';
                     technicianInput.setAttribute('required', 'required');
+                    
                     nikInput.value = '';
                     nuptkInput.value = '';
                 }
             }
 
-            roleSelect.addEventListener('change', toggleFields);
             roleSelect.addEventListener('change', toggleFields);
 
             toggleFields();

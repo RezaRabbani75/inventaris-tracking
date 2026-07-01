@@ -19,11 +19,10 @@
         @endif
 
         <div class="card shadow-sm">
-            {{-- Header Card dilengkapi dengan Form Filter --}}
             <div class="card-header border-bottom d-flex justify-content-between align-items-center">
                 <h4 class="text-primary mb-0">Daftar Seluruh Pengajuan Perangkat</h4>
                 
-                <form action="{{ route('persetujuan-peminjaman.index') }}" method="GET" class="form-inline">
+                <form action="{{ route('persetujuan-peminjaman.index') }}" method="GET" class="form-inline" onsubmit="this.querySelector('button[type=submit]').disabled=true; this.querySelector('button[type=submit]').innerHTML='<i class=\'fas fa-spinner fa-spin\'></i> Memproses...';">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-filter"></i></span>
@@ -44,7 +43,7 @@
                             <tr>
                                 <th class="text-center" width="5%">No</th>
                                 <th>Peminjam</th>
-                                <th>Peran</th> {{-- Kolom Baru --}}
+                                <th>Peran</th>
                                 <th>Barang</th>
                                 <th class="text-center">Jumlah</th>
                                 <th>Tgl Pinjam</th>

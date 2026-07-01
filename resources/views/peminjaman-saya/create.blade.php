@@ -78,7 +78,7 @@
 
                 <div class="col-12 col-lg-8 mb-4">
                     <div class="card shadow-sm border-0 h-100">
-                        <form action="{{ route('peminjaman-saya.store') }}" method="POST">
+                        <form action="{{ route('peminjaman-saya.store') }}" method="POST" onsubmit="this.querySelector('button[type=submit]').disabled=true; this.querySelector('button[type=submit]').innerHTML='<i class=\'fas fa-spinner fa-spin\'></i> Memproses...';">
                             @csrf
                             <input type="hidden" name="barang_id" value="{{ $barang->id }}">
 

@@ -78,7 +78,6 @@
     @livewireScripts
 
     <script>
-        // Compatibility shim for older Bootstrap 4 data attributes in existing templates.
         document.querySelectorAll('[data-toggle]').forEach((el) => {
             if (!el.hasAttribute('data-bs-toggle')) {
                 el.setAttribute('data-bs-toggle', el.getAttribute('data-toggle'));
@@ -96,6 +95,24 @@
                 el.setAttribute('data-bs-dismiss', el.getAttribute('data-dismiss'));
             }
         });
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const forms = document.querySelectorAll('form');
+        
+        forms.forEach(function (form) {
+            form.addEventListener('submit', function () {
+                const submitButton = form.querySelector('button[type="submit"]');
+                
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Memproses...';
+                }
+            });
+        });
+    });
     </script>
 
     <!-- Additional JS (if any) -->

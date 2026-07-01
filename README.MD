@@ -12,44 +12,6 @@
 
 ---
 
-## Table of Contents
-
-- [Why This Template?](#why-this-template)
-- [Core Features](#core-features)
-- [Advanced Features](#advanced-features)
-- [Tech Stack](#tech-stack)
-- [Prerequisites](#prerequisites)
-- [Quick Start](#quick-start)
-- [Configuration](#configuration)
-- [Password Reset Modes](#password-reset-modes)
-- [Quick Tour Routes](#quick-tour-routes)
-- [Generator Commands](#generator-commands)
-- [Project Structure](#project-structure)
-- [Testing & Quality](#testing--quality)
-- [CI Pipeline](#ci-pipeline)
-- [Security](#security)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contributors](#contributors)
-- [Acknowledgments](#acknowledgments)
-
----
-
-## Why This Template?
-
-| Without this template | With this template |
-|---|---|
-| Set up auth from scratch | Auth + OTP password reset ready |
-| Build admin layout manually | Stisla UI integrated with Vite |
-| Write repetitive CRUD boilerplate | `make:crud-stisla` generator |
-| No activity tracking | Built-in activity log system |
-| No file management | File manager with folder support |
-| No notification center | Database notifications ready |
-| No settings panel | Grouped dynamic settings |
-
----
-
 ## Core Features
 
 - **Laravel 13 + PHP 8.3+** — latest framework with modern PHP features
@@ -162,6 +124,7 @@ After the system succesfully running, create a user and promote superadmin:
 ```bash
 php artisan tinker
 ```
+Search the user and promote them to Superadmin:
 
 $user = User::find(1);
 
@@ -173,7 +136,7 @@ $user->save();
 $user->getRoleNames();
 $user->role;           
 
-```php
+```bash
 $user = App\Models\User::where('email', 'your@email.com')->first();
 $user?->assignRole('superadmin');
 ```
